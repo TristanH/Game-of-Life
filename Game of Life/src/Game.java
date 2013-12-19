@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JButton;
@@ -18,8 +19,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.plaf.basic.BasicSplitPaneUI.KeyboardDownRightHandler;
 
 //consider representing the grid as an array of longs
-class Game extends JPanel implements MouseListener, KeyListener, ActionListener {
-
+class Game extends JPanel implements MouseListener, KeyListener, ActionListener, MouseMotionListener {
+	int mouseX, mouseY;
 	Grid grid = new Grid(60);
 	int pixPerBox = 600 / grid.spots;
 	int steps = 0;
@@ -31,6 +32,7 @@ class Game extends JPanel implements MouseListener, KeyListener, ActionListener 
 	public Game() {
 		addMouseListener(this);
 		addKeyListener(this);
+		addMouseMotionListener(this);
 		this.setFocusable(true);
 		this.setLayout(null);
 		
@@ -163,6 +165,7 @@ class Game extends JPanel implements MouseListener, KeyListener, ActionListener 
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		
 		if (isInGrid(e.getX(), e.getY())) 
 			grid.addBlocks(true);
 	    else if (timeSlider.containsClick(e.getX(),e.getY()))
@@ -172,19 +175,11 @@ class Game extends JPanel implements MouseListener, KeyListener, ActionListener 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
+
 		timeSlider.dragOff();
 		grid.addBlocks(false);
 	}
 
-	public int getMouseX() {
-		return MouseInfo.getPointerInfo().getLocation().x
-				- this.getLocationOnScreen().x;
-	}
-
-	public int getMouseY() {
-		return MouseInfo.getPointerInfo().getLocation().y
-				- this.getLocationOnScreen().y;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -198,6 +193,19 @@ class Game extends JPanel implements MouseListener, KeyListener, ActionListener 
 				play.setText("Start Simulation");
 			}
 		}
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		mouseX=e.getX();
+		mouseY=e.getY();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		mouseX=e.getX();
+		mouseY=e.getY();
 		
 	}
 }
